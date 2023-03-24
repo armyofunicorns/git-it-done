@@ -1,16 +1,24 @@
-/* Created by Anthony Hall
-Updated on March 18, 2023 */
+/* Created by Anthony Hall */
+/* Updated on March 23, 2023 */
 
 var userFormEl = document.querySelector("#user-form");
 var nameInputEl = document.querySelector("#username");
 var repoContainerEl = document.querySelector("#repos-container");
+
+// This is the value to update.
 var repoSearchTerm = document.querySelector("#repo-search-term");
+var subTitleTextEl = document.querySelector(".subtitle");
+
+repoSearchTerm.textContent = "";
+subTitleTextEl.textContent = "";
 
 var formSubmitHandler = function(event) {
-    console.log("start formSubmitHandler");
+    // console.log("start formSubmitHandler");
     event.preventDefault();
     // get value from input element
     var username = nameInputEl.value.trim();
+    // repoSearchTerm.textContent = "Searching...";
+    // subTitleTextEl.textContent = "Searching..."
 
     if (username) {
         getUserRepos(username);
@@ -18,12 +26,12 @@ var formSubmitHandler = function(event) {
     } else {
         alert("Please enter a GitHub username");
     }
-    console.log(event);
-    console.log("done formSubmitHandler");
+    // console.log(event);
+    // console.log("done formSubmitHandler");
 };
 
 var displayRepos = function(repos, searchTerm) {
-    console.log("start displayRepos");
+    // console.log("start displayRepos");
     // check if api returned any repos
     if (repos.length === 0) {
         repoContainerEl.textContent = "No repositories found.";
@@ -32,8 +40,8 @@ var displayRepos = function(repos, searchTerm) {
     // clear old content
     repoContainerEl.textContent = "";
     repoSearchTerm.textContent = searchTerm;
-    console.log(repos);
-    console.log(searchTerm);
+    // console.log(repos);
+    // console.log(searchTerm);
 
     // loop over repos
     for (var i = 0; i < repos.length; i++) {
@@ -41,8 +49,9 @@ var displayRepos = function(repos, searchTerm) {
         var repoName = repos[i].owner.login + "/" + repos[i].name;
     
         // create a container for each repo
-        var repoEl = document.createElement("div");
+        var repoEl = document.createElement("a");
         repoEl.classList = "list-item flex-row justify-space-between align-center";
+        repoEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
     
         // create a span element to hold repository name
         var titleEl = document.createElement("span");
@@ -70,12 +79,12 @@ var displayRepos = function(repos, searchTerm) {
         repoContainerEl.appendChild(repoEl);
     }
     
-    console.log("done displayRepos");
+    // console.log("done displayRepos");
 };
 
 // Get All the Repos By Users
 var getUserRepos = function(user) {
-    console.log("start getUserRepos");
+    // console.log("start getUserRepos");
 
     // format the github api url
     var apiUrl = "https://api.github.com/users/" + user + "/repos";

@@ -1,7 +1,11 @@
 /* File created by Anthony Hall on March 19, 2023 */
+/* Updated on March 23, 2023 */
 
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var queryString = document.location.search;
+var repoNameEl = document.querySelector("#repo-name");
+var backButtonEl = document.querySelector("#btn-back");
 
 var displayWarning = function(repo) {
     limitWarningEl.textContent = "To see more than 30 entries, visit...";
@@ -14,10 +18,23 @@ var displayWarning = function(repo) {
     limitWarningEl.appendChild(linkEl);
 };
 
+var getRepoName = function(queryString) {
+    var repoName = queryString.split("=")[1];
+    if (repoName) {
+        getRepoIssues(repoName);
+        // Update the text on the page.
+        repoNameEl.textContent = repoName;
+        backButtonEl.setAttribute("href", "./index.html?repo=" + repoName);
+        backButtonEl.setAttribute("target", "_self");
+    } else {
+        document.location.replace("./index.html?err=nogo");
+    };
+};
+
 var getRepoIssues = function(repo) {
-    console.log("start getRepoIssues... " + repo);
+    // console.log("start getRepoIssues... " + repo);
     var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
-    console.log(apiUrl);
+    // console.log(apiUrl);
 
     // fetch(apiUrl);
 
@@ -40,20 +57,20 @@ var getRepoIssues = function(repo) {
             }
       })
         .catch(function(error) {
-            console.log(error);
-            alert("Network issue...");
+            // if not successful, redirect to homepage
+            document.location.replace("./index.html");
         });
     };
 
 var displayIssues = function(issues) {
-    console.log("start displayIssues");
+    // console.log("start displayIssues");
     if (issues.length === 0) {
         issueContainerEl.textContent = "This repo has no open issues!";
         return;
     }
 
     for (var i = 0; i < issues.length; i++) {
-        console.log(i);
+        // console.log(i);
         var issueEl = document.createElement("a");
         issueEl.classList = "list-item flex-row justify-space-between align-center";
         issueEl.setAttribute("href", issues[i].html_url);
@@ -83,6 +100,7 @@ var displayIssues = function(issues) {
     };
 };
 
-
-getRepoIssues("openai/openai-cookbook");
+// 
+getRepoName(queryString);
+// getRepoIssues("openai/openai-cookbook");
 
