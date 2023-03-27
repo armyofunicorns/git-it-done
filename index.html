@@ -14,10 +14,8 @@
 <body class="flex-column min-100-vh">
   <header class="hero">
     <h1 class="app-title"><i class="fab fa-github"></i> Git it Done!</h1>
-    <p>Search for a GitHub user or click on a language to see a list of repositories and how many open issues they have!
-    </p>
+    <p>Find GitHub repos with open issues.</p>
   </header>
-
 
   <main class="flex-row justify-space-between">
     <div class="col-12 col-md-4">
@@ -28,6 +26,14 @@
           <input name="username" id="username" type="text" autofocus="true" class="form-input" />
           <button type="submit" class="btn">Get User</button>
         </form>
+      </div>
+      <div class="card">
+        <h3 class="card-header text-uppercase">Search By Topic</h3>
+        <div id="language-buttons" class="card-body">
+          <button data-language="javascript" type="submit" class="btn">JavaScript</button>
+          <button type="submit" data-language="html" class="btn">HTML</button>
+          <button type="submit" data-language="css" class="btn">CSS</button>
+        </div>
       </div>
     </div>
 

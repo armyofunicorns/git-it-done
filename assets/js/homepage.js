@@ -1,5 +1,5 @@
 /* Created by Anthony Hall */
-/* Updated on March 23, 2023 */
+/* Updated on March 27, 2023 */
 
 var userFormEl = document.querySelector("#user-form");
 var nameInputEl = document.querySelector("#username");
@@ -9,11 +9,12 @@ var repoContainerEl = document.querySelector("#repos-container");
 var repoSearchTerm = document.querySelector("#repo-search-term");
 var subTitleTextEl = document.querySelector(".subtitle");
 
-repoSearchTerm.textContent = "";
-subTitleTextEl.textContent = "";
+var languageButtonsEl = document.querySelector("#language-buttons");
+
+// repoSearchTerm.textContent = "";
+// subTitleTextEl.textContent = "";
 
 var formSubmitHandler = function(event) {
-    // console.log("start formSubmitHandler");
     event.preventDefault();
     // get value from input element
     var username = nameInputEl.value.trim();
@@ -26,12 +27,9 @@ var formSubmitHandler = function(event) {
     } else {
         alert("Please enter a GitHub username");
     }
-    // console.log(event);
-    // console.log("done formSubmitHandler");
 };
 
 var displayRepos = function(repos, searchTerm) {
-    // console.log("start displayRepos");
     // check if api returned any repos
     if (repos.length === 0) {
         repoContainerEl.textContent = "No repositories found.";
@@ -40,8 +38,6 @@ var displayRepos = function(repos, searchTerm) {
     // clear old content
     repoContainerEl.textContent = "";
     repoSearchTerm.textContent = searchTerm;
-    // console.log(repos);
-    // console.log(searchTerm);
 
     // loop over repos
     for (var i = 0; i < repos.length; i++) {
@@ -78,24 +74,32 @@ var displayRepos = function(repos, searchTerm) {
         // append container to the dom
         repoContainerEl.appendChild(repoEl);
     }
+};
+
+// Get repos by language
+var getFeaturedRepos = function(language) {
+    // Construct the API URL var
+    var apiUrl = "https://api.github.com/search/repositories?q=" + language + "+is:featured&sort=help-wanted-issues";
     
-    // console.log("done displayRepos");
+    console.log(apiUrl);
+    console.log(language);
+    
+    fetch(apiUrl).then(function(response) {
+        if(response.ok) {
+            response.json().then(function(data) {
+                displayRepos(data.items, language);
+            });
+        } else {
+            alert('Error: GitHub user not found.');
+        }
+    });
 };
 
 // Get All the Repos By Users
 var getUserRepos = function(user) {
-    // console.log("start getUserRepos");
 
     // format the github api url
     var apiUrl = "https://api.github.com/users/" + user + "/repos";
-    
-    // var response = fetch("https://api.github.com/users/armyofunicorns/repos");
-    // console.log(response);
-    // fetch("https://api.github.com/users/armyofunicorns/repos").then(function(response) {
-    //     response.json().then(function(data) {
-    //         console.log(data);
-    //     });    
-    // });
      
     // make a request to the url
     fetch(apiUrl)
@@ -106,7 +110,7 @@ var getUserRepos = function(user) {
                     displayRepos(data, user);
                 });
             } else {
-                alert("Error: GitHub User Not Found");
+                alert("Error: GitHub user not found.");
             };
         })
         .catch(function(error) {
@@ -115,5 +119,17 @@ var getUserRepos = function(user) {
         });
 };
 
+var buttonClickHandler = function(event) {
+    var language = event.target.getAttribute("data-language");
+    console.log(language);
+    if (language) {
+        getFeaturedRepos(language);
+      
+        // clear old content
+        repoContainerEl.textContent = "";
+      }
+};
+
+
 userFormEl.addEventListener("submit", formSubmitHandler);
-// getUserRepos(username);
+languageButtonsEl.addEventListener("click", buttonClickHandler);
